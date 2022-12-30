@@ -54,7 +54,7 @@ def var_t(model,nq,epoch,circ):
     dx = []
     for nl in [2,10,20,30,40,50]:
         
-        f = model(nq,nl)
+        f = model(nq,nl,1)
         ddd = 0
         
         while ddd<1/(2**nq):
@@ -92,7 +92,7 @@ def var_sim(model,nq,epoch,circ):
    
     for nl in [2,10,20,30,40,50]:
         soma = 0
-        f = model(nq,nl)
+        f = model(nq,nl,2)
         tp = trange(epoch)
         ss = []
         for i in tp:
@@ -126,16 +126,15 @@ for nq in [4,5,6]:
     if not os.path.exists('./NumQubtis_{}/var_sim'.format(nq)):
         os.mkdir('./NumQubtis_{}/var_sim'.format(nq))
 
-    list_model_1 = [md.model1_1,md.model2_1,md.model3_1,md.model4_1,md.model5_1,md.model6_1,md.model7_1,md.model8_1,md.model9_1,md.model10_1,md.model11_1,md.model12_1]
-    list_model_2 = [md.model1_2,md.model2_2,md.model3_2,md.model4_2,md.model5_2,md.model6_2,md.model7_2,md.model8_2,md.model9_2,md.model10_2,md.model11_2,md.model12_2]
-
+    list_model = [md.model1,md.model2,md.model3,md.model4,md.model5,md.model6,md.model7,md.model8,md.model9,md.model10,md.model11,md.model12]
+    
     for mod in range(12):
 
 
         
-        dx,var_t_,exp_1,exp_2 = var_t(list_model_1[mod],nq,2000,mod+1)
+        dx,var_t_,exp_1,exp_2 = var_t(list_model_1[mod],nq,5000,mod+1)
         
-        var_s = var_sim(list_model_1[mod],nq,2000,mod+1)
+        var_s = var_sim(list_model_1[mod],nq,5000,mod+1)
         plt.title('Model {}'.format(mod+1))
         plt.plot(dx,var_t_,'--o',label='Var_t') 
         plt.plot(dx,var_s,'o',label='Var_s') 
