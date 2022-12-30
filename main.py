@@ -1,5 +1,6 @@
 import model as md  
 
+
 import pennylane as qml
 from pennylane import numpy as nnp
 import numpy as np
@@ -25,7 +26,7 @@ def expre(F,n):
     
     return np.sqrt(F-1/d)
 
-def main_1(model,nq,epoch):
+def main_1(model,nq,epoch,num):
 
     soma = 0
     F = 0
@@ -33,7 +34,7 @@ def main_1(model,nq,epoch):
     dx = []
     for nl in [2,10,20,30,40,50]:
         
-        f = model(nq,nl)
+        f = model(nq,nl,num)
         
         ddd = 0
         
@@ -60,21 +61,21 @@ def main_1(model,nq,epoch):
     exp = np.array(exp)
     return dx, exp
 
-def main_2(model,nq,epoch,circ):
+def main_2(model,nq,epoch,circ,num):
     
     
     med = []
     #dx = []
     for nl in [2,10,20,30,40,50]:
         soma = 0
-        f = model(nq,nl)
+        f = model(nq,nl,num)
         tp = trange(epoch)
         for i in tp:
             tp.set_description(f" circ:{circ} NL:{nl}  ")
             w = np.random.random((nq,nl))
             out = f(w)
             soma+=out[0]
-        #dx.append(nl)
+        
         med.append(soma/epoch)
     med = abs(np.array(med)-1/(2**nq))
     return med
@@ -84,36 +85,35 @@ def main_2(model,nq,epoch,circ):
 
 for nq in [4,5,6]:
 
-    if not os.path.exists('./NumQubtis_{}'.format(nq)):
-        os.mkdir('./NumQubtis_{}'.format(nq))
+    if not os.path.exists('./te_NumQubtis_{}'.format(nq)):
+        os.mkdir('./te_NumQubtis_{}'.format(nq))
 
-    if not os.path.exists('./NumQubtis_{}/graficos'.format(nq)):
-        os.mkdir('./NumQubtis_{}/graficos'.format(nq))
+    if not os.path.exists('./te_NumQubtis_{}/graficos'.format(nq)):
+        os.mkdir('./te_NumQubtis_{}/graficos'.format(nq))
 
-    if not os.path.exists('./NumQubtis_{}/expr'.format(nq)):
-        os.mkdir('./NumQubtis_{}/expr'.format(nq))
+    if not os.path.exists('./te_NumQubtis_{}/expr'.format(nq)):
+        os.mkdir('./te_NumQubtis_{}/expr'.format(nq))
 
-    if not os.path.exists('./NumQubtis_{}/med'.format(nq)):
-        os.mkdir('./NumQubtis_{}/med'.format(nq))
+    if not os.path.exists('./te_NumQubtis_{}/med'.format(nq)):
+        os.mkdir('./te_NumQubtis_{}/med'.format(nq))
 
-    list_model_1 = [md.model1_1,md.model2_1,md.model3_1,md.model4_1,md.model5_1,md.model6_1,md.model7_1,md.model8_1,md.model9_1,md.model10_1,md.model11_1,md.model12_1]
-    list_model_2 = [md.model1_2,md.model2_2,md.model3_2,md.model4_2,md.model5_2,md.model6_2,md.model7_2,md.model8_2,md.model9_2,md.model10_2,md.model11_2,md.model12_2]
-
+    list_model = [md.model1,md.model2,md.model3,md.model4,md.model5,md.model6,md.model7,md.model8,md.model9,md.model10,md.model11,md.model12]
+   
     for mod in range(0,12):
 
 
-        dx,exp = main_1(list_model_1[mod],nq,2000)
-        med = main_2(list_model_2[mod],nq,2000,mod+1)
+        dx,exp = main_1(list_model[mod],nq,5000,1)
+        med = main_2(list_model[mod],nq,5000,mod+1,2)
         plt.title('Model {}'.format(mod+1))
         plt.plot(dx,exp,'--o',label='Expr') 
         plt.plot(dx,med,'o',label='$\mu$')
         plt.xlabel('Number Layer')
         plt.legend()
         plt.xticks([2,10,20,30,40,50])
-        plt.savefig('./NumQubtis_{}/graficos/model_{}.pdf'.format(nq,mod+1))
+        plt.savefig('./te_NumQubtis_{}/graficos/model_{}.pdf'.format(nq,mod+1))
         plt.close()
 
-        np.savetxt('./NumQubtis_{}/expr/expr_model_{}.txt'.format(nq,mod+1),exp)
-        np.savetxt('./NumQubtis_{}/med/med_model_{}.txt'.format(nq,mod+1),med)
+        np.savetxt('./te_NumQubtis_{}/expr/expr_model_{}.txt'.format(nq,mod+1),exp)
+        np.savetxt('./te_NumQubtis_{}/med/med_model_{}.txt'.format(nq,mod+1),med)
 
 
