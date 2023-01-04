@@ -27,9 +27,8 @@ def expre_1(F,n):
 
 def expre_2(F,n):
     d = 2**n
-    d1 = 2**(n-1)
-    dd = (d-1)*d1
-    return np.sqrt(F-1/dd)
+    dd = (2/(d**2-1))*(1-1/d)
+    return np.sqrt(F-dd)
 
 
 def alpha(n):
@@ -39,11 +38,11 @@ def alpha(n):
 
 def beta(n):
     d = 2**n
-    return abs((2/(d**1-1))*(1-1/d))
+    return abs( (2/(d**2-1))*(1-1/d) - 1/d**2 )
 
 
 def var(expr1,expr2,nq):
-    return beta(nq)+alpha(nq)*expr1+2*expr2
+    return beta(nq)+alpha(nq)*expr1+expr2+expr1**2
 
 def var_t(model,nq,epoch,circ):
 
@@ -81,8 +80,7 @@ def var_t(model,nq,epoch,circ):
     dx = np.array(dx)
     exp_1 = np.array(exp_1)
     exp_2 = np.array(exp_2)
-    print(exp_1)
-    print(exp_2)
+   
     return dx, var(exp_1,exp_2,nq),exp_1,exp_2
 
 def var_sim(model,nq,epoch,circ):
@@ -132,9 +130,9 @@ for nq in [4,5,6]:
 
 
         
-        dx,var_t_,exp_1,exp_2 = var_t(list_model_1[mod],nq,5000,mod+1)
+        dx,var_t_,exp_1,exp_2 = var_t(list_model[mod],nq,5000,mod+1)
         
-        var_s = var_sim(list_model_1[mod],nq,5000,mod+1)
+        var_s = var_sim(list_model[mod],nq,5000,mod+1)
         plt.title('Model {}'.format(mod+1))
         plt.plot(dx,var_t_,'--o',label='Var_t') 
         plt.plot(dx,var_s,'o',label='Var_s') 
